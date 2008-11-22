@@ -1,0 +1,31 @@
+.console, .console input.prompt {
+  font-family: monospace;
+  font-size: 11pt;
+}
+
+.console input.prompt{
+  width: 100%;
+  border: none;
+  border-bottom: 1px dotted #666;
+}
+
+.log .entry, #command_line { 
+  margin: 2px 0px;
+}
+
+.log .entry + .entry { 
+  border-top: 1px solid #eee;
+}
+
+.log .error {
+  color: #e66;
+}
+
+.log .command {
+  color: #666;
+}
+
+.log .response {
+  color: #66e;
+}
+

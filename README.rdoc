@@ -1,0 +1,22 @@
+= jQuery CommandLine
+Adam Sanderson, netghost@gmail.com
+
+A simple console built in jQuery.
+
+== Current Features
+* Absurdly easy to start using
+* Basic history support
+
+== Getting Started
+Really basic setup:
+  $('#console').commandLine()
+
+Slightly more exciting, start a console and log a line:
+  $('#console').commandLine().data('commandLine.instance').log('info', 'Welcome to your console...');
+
+Too lazy to try that?  Look at example.html
+
+== Contact Information
+  Adam Sanderson
+  email: netghost@gmail.com
+  web: http://endofline.wordpress.com
