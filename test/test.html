@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>JSSpec results</title>
+<link rel="stylesheet" type="text/css" href="JSSpec.css" />
+<script type="text/javascript" src="diff_match_patch.js"></script>
+<script type="text/javascript" src="JSSpec.js"></script>
+<script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
+<script type="text/javascript" src="../js/jquery.command_line.js"></script>
+<script type="text/javascript">
+  describe('Command Line', {
+    before: function(){
+      cl = $('#console').commandLine().data('commandLine.instance');
+    },
+    
+    'Should have a log': function() {
+      value_of($('#console .log')).should_not_be_empty();
+    },
+    
+    'Should have a prompt': function() {
+      value_of($('#console .prompt')).should_not_be_empty();
+    }
+  })
+</script>
+</head>
+<body>
+  <div id='console'></div>
+</body>
+</html>
