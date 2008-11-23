@@ -60,6 +60,7 @@
     'Console should display Functions': function(){
       cl.command('f = function(x){x+1}');
       value_of($('#console .log .response')).should_not_be_empty();
+      delete f;
     },
     
   })
