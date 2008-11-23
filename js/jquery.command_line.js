@@ -36,8 +36,6 @@
           // ENTER
           var cmd = this.value;
           self.command(cmd);
-          this.value = '';
-          
         } else if(event.which == 38) {
           // UP
           if(self.history.isCurrent()){
@@ -60,10 +58,12 @@
       this.log('command',cmd);
       try{
         var response = eval(cmd);
-        this.log('response', response);
+        this.log('response', response.toString());
       } catch(ex) {
         this.log('error', ex.toString() );
       }
+
+      this.prompt.val('');
     },
     
     log: function(type, message){

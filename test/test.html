@@ -11,7 +11,14 @@
 <script type="text/javascript">
   describe('Command Line', {
     before: function(){
+      // Setup the command line
       cl = $('#console').commandLine().data('commandLine.instance');
+    },
+    
+    after: function(){
+      // Remove the command line
+      $('#console').data('commandLine.instance', null);
+      $('#console').html('');
     },
     
     'Should have a log': function() {
@@ -20,11 +27,47 @@
     
     'Should have a prompt': function() {
       value_of($('#console .prompt')).should_not_be_empty();
-    }
+    },
+    
+    'Entering valid commands should log them to the screen': function(){
+      cl.command('1+1');
+      value_of($('#console .log .command').length).should_be(1);
+      value_of($('#console .log .command').text()).should_be('1+1');
+    },
+    
+    'Entering commands should clear the prompt': function(){
+      cl.prompt.val("1+1");
+      cl.command(cl.prompt.val());
+      value_of($('#console .prompt').val()).should_be_empty();
+    },
+    
+    'Entering valid commands should log them to the screen': function(){
+      cl.command('1+1');
+      cl.command('"a"');
+      var responses = $('#console .log .response');
+      
+      value_of(responses.length).should_be(2);
+      value_of($(responses[0]).text()).should_be('2');
+      value_of($(responses[1]).text()).should_be('a');
+    },
+    
+    'Console should display Arrays': function(){
+      cl.command('[1,2,3]');
+      value_of($('#console .log .response')).should_not_be_empty();
+      value_of($('#console .log .response').text()).should_be('1,2,3');
+    },
+    
+    'Console should display Functions': function(){
+      cl.command('f = function(x){x+1}');
+      value_of($('#console .log .response')).should_not_be_empty();
+    },
+    
   })
 </script>
 </head>
 <body>
-  <div id='console'></div>
+  <div id='test_body' style='display: none'>
+    <div id='console'></div>
+  </div>
 </body>
 </html>
