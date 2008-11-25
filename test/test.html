@@ -91,9 +91,31 @@
       $('#console').html('');
     },
     
-    'History should include each executed command': function(){
+    'History should included each executed command': function(){
       value_of(h.items).should_be(commands);
-    }
+    },
+    
+    'Going back should return the previous command': function(){
+      value_of(h.back()).should_be(commands[2]);
+    },
+    
+    'You should not be able to go forward past the present command': function(){
+      value_of(h.forward()).should_be('');
+    },
+    
+    'Stashing should store the current command': function(){
+      var cmd = '"hi!"';
+      h.stash(cmd);
+      h.back();
+      value_of(h.forward()).should_be(cmd);
+    },
+    
+    'You should not be able to go beyond the first command': function(){
+      var i = 10; while(i-- > 0){h.back();}
+
+      value_of(h.back()).should_be(commands[0]);
+    },
+    
     
   });
 </script>
