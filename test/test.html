@@ -116,7 +116,14 @@
       value_of(h.back()).should_be(commands[0]);
     },
     
-    
+    'If there is a limit, no more than that number of commands should be stored': function(){
+      h.limit = 5;
+      var i = 10; while(i-- > 0){
+        $.each(commands, function(n, cmd){ cl.command(cmd); });
+      }
+
+      value_of(h.items.length).should_be(h.limit);
+    }
   });
 </script>
 </head>

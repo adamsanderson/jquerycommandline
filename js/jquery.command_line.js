@@ -15,9 +15,6 @@
     defaults: {
       historyLimit: null
     },
-    // Setup History
-    history: [],
-    historyPosition: 0,
     
     init: function(e, options){
       options = options || {};
@@ -25,7 +22,7 @@
       this.container = $(e).addClass('console').append("<div class='log'/><input class='prompt'/>");
       this.prompt = $(this.container).find('input.prompt');
       this.logElement = $(this.container).find('div.log');
-      this.history = new CommandHistory(options.limit);
+      this.history = new CommandHistory(options.historyLimit);
       
       var self = this;
       
@@ -73,7 +70,7 @@
   
   function CommandHistory(options){
     options = options || {};
-    this.limit =        options.limit;
+    this.limit = options.limit;
     this.items = [];
   };
   
