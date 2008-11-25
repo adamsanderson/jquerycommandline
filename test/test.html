@@ -63,7 +63,39 @@
       delete f;
     },
     
-  })
+    'Console should display errors for invalid code': function(){
+      cl.command('apple / lobster + 7!!');
+      value_of($('#console .log .response')).should_be_empty();
+      value_of($('#console .log .error').length).should_be(1);
+    }
+  });
+  
+  describe('Command Line History', {
+    before: function(){
+      // Setup the command line
+      cl = $('#console').commandLine().data('commandLine.instance');
+      h = cl.history;
+      
+      commands = [
+        '1',
+        '1+1',
+        '"three"'
+      ];
+      
+      $.each(commands, function(n, cmd){ cl.command(cmd); });
+    },
+    
+    after: function(){
+      // Remove the command line
+      $('#console').data('commandLine.instance', null);
+      $('#console').html('');
+    },
+    
+    'History should include each executed command': function(){
+      value_of(h.items).should_be(commands);
+    }
+    
+  });
 </script>
 </head>
 <body>

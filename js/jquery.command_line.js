@@ -74,10 +74,10 @@
   function CommandHistory(options){
     options = options || {};
     this.limit =        options.limit;
+    this.items = [];
   };
   
   $.extend( CommandHistory.prototype , {
-    items: [],
     position: 0,
     currentCommand: '',
     
