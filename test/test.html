@@ -125,6 +125,24 @@
       value_of(h.items.length).should_be(h.limit);
     }
   });
+  
+  describe('Response Handlers', {
+    before: function(){
+      // Setup the command line
+      cl = $('#console').commandLine().data('commandLine.instance');
+    },
+    
+    after: function(){
+      // Remove the command line
+      $('#console').data('commandLine.instance', null);
+      $('#console').html('');
+    },
+    
+    'Response Handlers Should Handle jQuery Specially': function(){
+      cl.command('$("cake")');
+      value_of($('#console .log .response').text()).should_match(/jQuery/);
+    }
+  });
 </script>
 </head>
 <body>

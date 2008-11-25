@@ -17,8 +17,8 @@
     },
     
     init: function(e, options){
-      options = options || {};
-      this.options = $.extend({}, this.defaults, options);
+      options = $.extend({}, this.defaults, options || {});
+      this.options = options;
       this.container = $(e).addClass('console').append("<div class='log'/><input class='prompt'/>");
       this.prompt = $(this.container).find('input.prompt');
       this.logElement = $(this.container).find('div.log');
@@ -54,8 +54,18 @@
       
       this.log('command',cmd);
       try{
-        var response = eval(cmd);
-        this.log('response', response.toString());
+        var response = eval(cmd);        
+        var reponseHandler = null;
+
+        for(key in this.responseHandlers){
+          var h = this.responseHandlers[key]
+          if(h.handles(response)){ 
+            reponseHandler = h;
+            break; 
+          }
+        }
+        
+        this.log('response', reponseHandler.format(response));
       } catch(ex) {
         this.log('error', ex.toString() );
       }
@@ -65,7 +75,19 @@
     
     log: function(type, message){
       this.logElement.append($("<div class='entry "+type+"'/>").html(message));
-    }
+    },
+    
+    responseHandlers: [
+      { name:    "jQuery",
+        handles: function(r){ return(r.jquery); },
+        format:  function(r){ return("jQuery: " + r.length + " matches..."); }
+      },
+
+      { name:    "JavaScript",
+        handles: function(r){ return(true); },
+        format:  function(r){ return(r.toString()); }
+      }
+    ]
   });
   
   function CommandHistory(options){
@@ -73,7 +95,6 @@
     this.limit = options.limit;
     this.items = [];
   };
-  
   $.extend( CommandHistory.prototype , {
     position: 0,
     currentCommand: '',
@@ -111,5 +132,4 @@
     }
     
   });
-  
 })(jQuery);
