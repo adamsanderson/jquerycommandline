@@ -13,7 +13,8 @@
   
   $.extend( CommandLine.prototype , {
     defaults: {
-      historyLimit: null
+      historyLimit: null,
+      autoScroll: true
     },
     
     init: function(e, options){
@@ -70,7 +71,10 @@
       } catch(ex) {
         this.log('error', ex.toString() );
       }
-
+      
+      if(this.options.autoScroll){
+        $('html,body').animate({scrollTop: $(this.prompt).offset().top}, 1000);
+      }
       this.prompt.val('');
     },
     
@@ -81,7 +85,6 @@
     
     initResponseHandlers: function(){ 
       var handlers = [];
-      
       
       handlers.push({ 
         name:    "jQuery",
