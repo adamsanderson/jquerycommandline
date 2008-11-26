@@ -71,8 +71,8 @@
     },
     
     'Console should display XML in supported browsers [[JSSpec.Browser.FF2 || JSSpec.Browser.FF3]]': function() {
-       cl.command('<x/>');
-       value_of($('#console .log .response').text()).should_be('<x/>');
+       cl.command("<person name='joe'></person>");
+       value_of($('#console .log .response').text()).should_be('<person name="joe"/>');
     },
     
     'Console should display errors for invalid code': function(){

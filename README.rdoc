@@ -7,6 +7,7 @@ A simple console built in jQuery.
 * Absurdly easy to start using
 * Basic history support
 * Custom response handlers
+* E4X support on browsers that handle it. (ie: var p = <person name='joe'></person>)
 
 == Getting Started
 Really basic setup:
