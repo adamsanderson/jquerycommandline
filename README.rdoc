@@ -6,6 +6,7 @@ A simple console built in jQuery.
 == Current Features
 * Absurdly easy to start using
 * Basic history support
+* Custom response handlers
 
 == Getting Started
 Really basic setup:
