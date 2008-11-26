@@ -6,8 +6,13 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	<title>jQuery CommandLine</title>
+  <!-- Required -->
 	<script type="text/javascript" charset="utf-8" src='js/jquery-1.2.6.js'></script>
 	<script type="text/javascript" charset="utf-8" src='js/jquery.command_line.js'></script>
+	
+  <!-- Optional Libraries -->
+	<script type="text/javascript" charset="utf-8" src='js/json2.js'></script>
+	
 	<script type="text/javascript" charset="utf-8">
 	  $(document).ready(function(){
       $('#console').commandLine().data('commandLine.instance').log('info', 'Welcome to your console...');

@@ -8,6 +8,7 @@
 <script type="text/javascript" src="JSSpec.js"></script>
 <script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
 <script type="text/javascript" src="../js/jquery.command_line.js"></script>
+<script type="text/javascript" src="../js/json2.js"></script>
 <script type="text/javascript">
   describe('Command Line', {
     before: function(){
@@ -41,20 +42,26 @@
       value_of($('#console .prompt').val()).should_be_empty();
     },
     
-    'Entering valid commands should log them to the screen': function(){
+    'Responses should be logged': function(){
       cl.command('1+1');
       cl.command('"a"');
       var responses = $('#console .log .response');
       
       value_of(responses.length).should_be(2);
       value_of($(responses[0]).text()).should_be('2');
-      value_of($(responses[1]).text()).should_be('a');
+      value_of($(responses[1]).text()).should_be('"a"');
     },
     
     'Console should display Arrays': function(){
       cl.command('[1,2,3]');
       value_of($('#console .log .response')).should_not_be_empty();
-      value_of($('#console .log .response').text()).should_be('1,2,3');
+      value_of($('#console .log .response').text()).should_be('[1,2,3]');
+    },
+    
+    'Console should display Hashes': function(){
+      cl.command('{cake: "awesome!"}');
+      value_of($('#console .log .response')).should_not_be_empty();
+      value_of($('#console .log .response').text()).should_be('{"cake":"awesome!"}');
     },
     
     'Console should display Functions': function(){

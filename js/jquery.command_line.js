@@ -23,6 +23,7 @@
       this.prompt = $(this.container).find('input.prompt');
       this.logElement = $(this.container).find('div.log');
       this.history = new CommandHistory(options.historyLimit);
+      this.responseHandlers = this.initResponseHandlers();
       
       var self = this;
       
@@ -54,18 +55,18 @@
       
       this.log('command',cmd);
       try{
-        var response = eval(cmd);        
-        var reponseHandler = null;
+        var response = eval('('+cmd+')');
+        var responseHandler = null;
 
         for(key in this.responseHandlers){
           var h = this.responseHandlers[key]
           if(h.handles(response)){ 
-            reponseHandler = h;
+            responseHandler = h;
             break; 
           }
         }
         
-        this.log('response', reponseHandler.format(response));
+        this.log('response', responseHandler.format(response), {title: responseHandler.name});
       } catch(ex) {
         this.log('error', ex.toString() );
       }
@@ -73,21 +74,37 @@
       this.prompt.val('');
     },
     
-    log: function(type, message){
-      this.logElement.append($("<div class='entry "+type+"'/>").html(message));
+    log: function(type, message, attributes){
+      attributes = attributes || {};
+      this.logElement.append($("<div class='entry "+type+"'/>").html(message).attr(attributes));
     },
     
-    responseHandlers: [
-      { name:    "jQuery",
+    initResponseHandlers: function(){ 
+      var handlers = [];
+      
+      
+      handlers.push({ 
+        name:    "jQuery",
         handles: function(r){ return(r.jquery); },
         format:  function(r){ return("jQuery: " + r.length + " matches..."); }
-      },
-
-      { name:    "JavaScript",
+      });
+      
+      if((typeof JSON != 'undefined') && JSON.stringify){
+        handlers.push({
+          name:    "JSON",
+          handles: function(r){ return(! (typeof r === 'function' || typeof r == "undefined") ); },
+          format:  function(r){ return(JSON.stringify(r)); }
+        });
+      }
+      
+      handlers.push({ 
+        name:    "JavaScript",
         handles: function(r){ return(true); },
         format:  function(r){ return(r.toString()); }
-      }
-    ]
+      });
+      
+      return handlers;
+    }
   });
   
   function CommandHistory(options){
