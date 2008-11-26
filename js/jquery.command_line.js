@@ -80,18 +80,28 @@
     
     log: function(type, message, attributes){
       attributes = attributes || {};
-      this.logElement.append($("<div class='entry "+type+"'/>").html(message).attr(attributes));
+      this.logElement.append($("<div class='entry "+type+"'/>").text(message).attr(attributes));
     },
     
     initResponseHandlers: function(){ 
       var handlers = [];
       
+      // Conditional support for XML
+      if(typeof XML == 'function'){
+        handlers.push({
+          name:    "XML",
+          handles: function(r){ return(( (typeof r === 'xml') && r.toXMLString) ); },
+          format:  function(r){ return(r.toXMLString()); }
+        })
+      }
+      
       handlers.push({ 
         name:    "jQuery",
-        handles: function(r){ return(r.jquery); },
+        handles: function(r){ return((typeof r != 'xml') && r.jquery); },
         format:  function(r){ return("jQuery: " + r.length + " matches..."); }
       });
       
+      // Conditional support for JSON
       if((typeof JSON != 'undefined') && JSON.stringify){
         handlers.push({
           name:    "JSON",
