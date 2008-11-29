@@ -64,6 +64,12 @@
       value_of($('#console .log .response').text()).should_be('{"cake":"awesome!"}');
     },
     
+    'Console should display "undefined"': function(){
+      cl.command('undefined');
+      value_of($('#console .log .response')).should_not_be_empty();
+      value_of($('#console .log .response').text()).should_be('undefined');
+    },
+    
     'Console should display Functions': function(){
       cl.command('f = function(x){x+1}');
       value_of($('#console .log .response')).should_not_be_empty();

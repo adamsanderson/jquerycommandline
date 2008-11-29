@@ -57,17 +57,22 @@
       this.log('command',cmd);
       try{
         var response = eval('('+cmd+')');
-        var responseHandler = null;
-
-        for(key in this.responseHandlers){
-          var h = this.responseHandlers[key]
-          if(h.handles(response)){ 
-            responseHandler = h;
-            break; 
-          }
-        }
         
-        this.log('response', responseHandler.format(response), {title: responseHandler.name});
+        if(response == undefined){
+          this.log('response', 'undefined');
+          
+        } else {        
+          var responseHandler = null;
+          for(key in this.responseHandlers){
+            var h = this.responseHandlers[key]
+            if(h.handles(response)){ 
+              responseHandler = h;
+              break; 
+            }
+          }
+          this.log('response', responseHandler.format(response), {title: responseHandler.name});
+          
+        }
       } catch(ex) {
         this.log('error', ex.toString() );
       }
