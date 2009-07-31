@@ -31,8 +31,7 @@
       var self = this;
       
       // Register listeners on prompt
-      this.prompt.keyup(function(event){
-        //console.log(event.which);
+      this.prompt.keydown(function(event){
         if(event.which == 13){
           // ENTER
           var cmd = this.value;
@@ -49,6 +48,16 @@
           // DOWN
           var value = self.history.forward();
           this.value = value;
+        } else if (event.which == 9) {
+          event.preventDefault();
+          var results = self.library.complete(this.value);
+          if(results.length == 1){
+            this.value = results[0];
+          } else if (results.length > 1){
+            for(var i=0; i < results.length; i++){
+              self.log('info',results[i]);
+            }
+          }
         }
       });
     },
@@ -156,10 +165,10 @@
       });
       
       this.library.register('commands', 'lists all commands', function(){
-        var summaries = $('<div><h3>Commands</h3></div>');
+        var summaries = $('<div class="info"><h3>Commands</h3></div>');
         for(key in this.commands){
           var command = this.commands[key];
-          if( typeof command == 'function' ){
+          if( typeof command === 'function' ){
             summaries.append($('<div></div>').text(key + ': '+command.description));
           }
         }
@@ -175,6 +184,38 @@
       f.description = description;
       this.commands[name] = f;
     },
+    
+    names: function(){
+      var allNames = [];
+      for(name in this.commands){
+        if( typeof this.commands[name] === 'function' ){
+          allNames.push(name);
+        }
+      }
+      return allNames.sort();
+    },
+    
+    search: function(string){
+      var names = this.names();
+      var results = [];
+      
+      for(var i=0; i<names.length; i++){
+        var name = names[i];
+        if(name.indexOf(string) == 0){
+          results.push(names[i]);
+        }
+      }
+      return results;
+    },
+    
+    complete: function(string){
+      var results = [];
+      if(string.match(/^(\w+)$/)){
+        results = this.search(string);
+      }
+      return results;
+    },
+    
     execute: function(string){
       var res = string.match(/^(\w+)(\s+.+)?\s*$/);
       if(res){
