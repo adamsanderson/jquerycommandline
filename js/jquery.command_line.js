@@ -25,6 +25,7 @@
       this.logElement = $(this.container).find('div.log');
       this.history = new CommandHistory(options.historyLimit);
       this.responseHandlers = this.initResponseHandlers();
+      this.commandObjects = this.initCommandObjects();
       
       var self = this;
       
@@ -56,7 +57,7 @@
       
       this.log('command',cmd);
       try{
-        var response = eval('('+cmd+')');
+        var response = this.executeCommand(cmd);
         
         if(response == undefined){
           this.log('response', 'undefined');
@@ -139,6 +140,36 @@
       });
       
       return handlers;
+    },
+    
+    initCommandObjects: function(){
+      var objects = [
+        { 
+          name: 'About',
+          about: function(){return 'JQuery CommandLine -- Adam Sanderson (2009)';}
+        }
+      ];
+      
+      return objects;
+    },
+    
+    executeCommand: function(string){
+      var res = string.match(/^(\w+)(\s+.+)?\s*$/);
+      if(res){
+        var commandName = res[1];
+        var argumentString = res[2];
+        
+        for(var i=0; i < this.commandObjects.length; i++){
+          var commandObject = this.commandObjects[i];
+          var command = commandObject[commandName];
+          if(typeof command == 'function'){
+            var arguments = argumentString ? eval('['+argumentString+']') : [];
+            return(command.apply(this, arguments));
+          }
+        }
+      }
+      
+      return eval('('+string+')');
     }
   });
   

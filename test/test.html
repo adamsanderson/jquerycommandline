@@ -85,6 +85,11 @@
       cl.command('apple / lobster + 7!!');
       value_of($('#console .log .response')).should_be_empty();
       value_of($('#console .log .error').length).should_be(1);
+    },
+    
+    'Console should support commands as well as evaluation': function(){
+      cl.command('about');
+      value_of($('#console .log .response')).should_not_be_empty();
     }
   });
   
