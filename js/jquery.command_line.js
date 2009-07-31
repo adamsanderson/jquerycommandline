@@ -24,8 +24,9 @@
       this.prompt = $(this.container).find('input.prompt');
       this.logElement = $(this.container).find('div.log');
       this.history = new CommandHistory(options.historyLimit);
+      this.library = new CommandLibrary();
+      this.initCommands();
       this.responseHandlers = this.initResponseHandlers();
-      this.commandObjects = this.initCommandObjects();
       
       var self = this;
       
@@ -57,7 +58,7 @@
       
       this.log('command',cmd);
       try{
-        var response = this.executeCommand(cmd);
+        var response = this.library.execute(cmd);
         
         if(response == undefined){
           this.log('response', 'undefined');
@@ -149,45 +150,41 @@
       return handlers;
     },
     
-    initCommandObjects: function(){
-      var objects = [
-        { 
-          name: 'Help',
-          about: function(){return 'JQuery CommandLine -- Adam Sanderson (2009)';},
-          commands: function(){
-            var summaries = $('<div></div>');
-            $.each(this.commandObjects, function(i,obj){
-              summaries.append($('<h3></h3>').text(obj.name));
-
-              for(key in obj){
-                var command = obj[key];
-                if( typeof command == 'function' ){
-                  summaries.append($('<div></div>').text(key));
-                }
-              }
-            });
-            
-            return summaries;
+    initCommands: function(){
+      this.library.register('about', 'information about JQuery CommandLine', function(){
+        return 'JQuery CommandLine -- Adam Sanderson (2009)';
+      });
+      
+      this.library.register('commands', 'lists all commands', function(){
+        var summaries = $('<div><h3>Commands</h3></div>');
+        for(key in this.commands){
+          var command = this.commands[key];
+          if( typeof command == 'function' ){
+            summaries.append($('<div></div>').text(key + ': '+command.description));
           }
         }
-      ];
-      
-      return objects;
+        return summaries;
+      });
+    }
+  });
+  
+  function CommandLibrary(commands){}
+  $.extend( CommandLibrary.prototype , {
+    commands: {},
+    register: function(name, description, f){
+      f.description = description;
+      this.commands[name] = f;
     },
-    
-    executeCommand: function(string){
+    execute: function(string){
       var res = string.match(/^(\w+)(\s+.+)?\s*$/);
       if(res){
-        var commandName = res[1];
+        var name = res[1];
         var argumentString = res[2];
         
-        for(var i=0; i < this.commandObjects.length; i++){
-          var commandObject = this.commandObjects[i];
-          var command = commandObject[commandName];
-          if(typeof command == 'function'){
-            var arguments = argumentString ? eval('['+argumentString+']') : [];
-            return(command.apply(this, arguments));
-          }
+        var command = this.commands[name];
+        if (typeof command === 'function'){
+          var arguments = argumentString ? eval('['+argumentString+']') : [];
+          return(command.apply(this, arguments));
         }
       }
       
