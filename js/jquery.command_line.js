@@ -62,16 +62,7 @@
           this.log('response', 'undefined');
           
         } else {        
-          var responseHandler = null;
-          for(key in this.responseHandlers){
-            var h = this.responseHandlers[key]
-            if(h.handles(response)){ 
-              responseHandler = h;
-              break; 
-            }
-          }
-          this.log('response', responseHandler.format(response), {title: responseHandler.name});
-          
+          this.formatResponse(response);
         }
       } catch(ex) {
         this.log('error', ex.toString() );
@@ -83,9 +74,35 @@
       this.prompt.val('');
     },
     
+    formatResponse: function(response){
+      var responseHandler = this.responseHandlerFor(response);
+      if(responseHandler.html){
+        this.logHTML('response', responseHandler.format(response), {title: responseHandler.name});
+      } else {
+        this.log('response', responseHandler.format(response), {title: responseHandler.name});
+      }
+    },
+    
+    responseHandlerFor: function(response){
+      var responseHandler = null;
+      for(key in this.responseHandlers){
+        var h = this.responseHandlers[key]
+        if(h.handles(response)){ 
+          responseHandler = h;
+          break; 
+        }
+      }
+      return responseHandler;
+    },
+    
     log: function(type, message, attributes){
       attributes = attributes || {};
       this.logElement.append($("<div class='entry "+type+"'/>").text(message).attr(attributes));
+    },
+    
+    logHTML: function(type, message, attributes){
+      attributes = attributes || {};
+      this.logElement.append($("<div class='entry "+type+"'/>").html(message).attr(attributes));
     },
     
     initResponseHandlers: function(){ 
