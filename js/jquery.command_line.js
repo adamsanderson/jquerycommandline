@@ -120,8 +120,15 @@
       
       handlers.push({ 
         name:    "jQuery",
+        html:    true,
         handles: function(r){ return((typeof r != 'xml') && r.jquery); },
-        format:  function(r){ return("jQuery: " + r.length + " matches..."); }
+        format:  function(r){ 
+          if(r.context || r.length == 0){
+            return("jQuery: " + r.length + " matches..."); 
+          } else {
+            return r;
+          }
+        }
       });
       
       // Conditional support for JSON
@@ -145,8 +152,23 @@
     initCommandObjects: function(){
       var objects = [
         { 
-          name: 'About',
-          about: function(){return 'JQuery CommandLine -- Adam Sanderson (2009)';}
+          name: 'Help',
+          about: function(){return 'JQuery CommandLine -- Adam Sanderson (2009)';},
+          commands: function(){
+            var summaries = $('<div></div>');
+            $.each(this.commandObjects, function(i,obj){
+              summaries.append($('<h3></h3>').text(obj.name));
+
+              for(key in obj){
+                var command = obj[key];
+                if( typeof command == 'function' ){
+                  summaries.append($('<div></div>').text(key));
+                }
+              }
+            });
+            
+            return summaries;
+          }
         }
       ];
       
