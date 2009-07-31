@@ -54,8 +54,20 @@
           if(results.length == 1){
             this.value = results[0];
           } else if (results.length > 1){
+            var bestMatch = results[0];
+            
             for(var i=0; i < results.length; i++){
-              self.log('info',results[i]);
+              var name = results[i];
+              if(bestMatch){
+                // Oooooohhh super substring pattern matching.
+                var pattern = new RegExp('^('+$.map(name, function(s,i){return name.slice(0,i+1);}).reverse().join('|')+')');
+                var substring = bestMatch.match(pattern);
+                bestMatch = substring ? substring[0] : null;
+              }
+              self.log('info',name);
+            }
+            if(bestMatch && bestMatch.length > this.value.length){ 
+              this.value = bestMatch; 
             }
           }
         }
@@ -68,7 +80,6 @@
       this.log('command',cmd);
       try{
         var response = this.library.execute(cmd);
-        
         if(response == undefined){
           this.log('response', 'undefined');
           
@@ -87,6 +98,11 @@
     
     formatResponse: function(response){
       var responseHandler = this.responseHandlerFor(response);
+      this.present(response, responseHandler);
+    },
+    
+    present: function(response, responseHandler){
+      _ = response;
       if(responseHandler.html){
         this.logHTML('response', responseHandler.format(response), {title: responseHandler.name});
       } else {
@@ -160,8 +176,14 @@
     },
     
     initCommands: function(){
+      var self = this;
       this.library.register('about', 'information about JQuery CommandLine', function(){
         return 'JQuery CommandLine -- Adam Sanderson (2009)';
+      });
+      
+      this.library.register('clear', 'clears the log', function(){
+        self.logElement.html('');
+        return 'clear';
       });
       
       this.library.register('commands', 'lists all commands', function(){
